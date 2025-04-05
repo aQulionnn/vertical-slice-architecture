@@ -1,4 +1,5 @@
 using Carter;
+using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 
@@ -15,6 +16,7 @@ builder.Services.AddMediatR(configuration =>
 builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("Database"));
 
 builder.Services.AddControllers();
+builder.Services.AddFastEndpoints();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,5 +36,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseFastEndpoints();
 
 app.Run();
