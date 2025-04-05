@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Contracts.MuseumContracts;
 using WebApi.Data;
+using WebApi.Mappers;
 
 namespace WebApi.Features.Museums;
 
@@ -19,15 +20,9 @@ public static class GetMuseums
         
         public async Task<IEnumerable<MuseumResponse>> Handle(Query request, CancellationToken cancellationToken)
         {
+            var mapper = new MuseumMapper();
             var museums = await _context.Museums
-                .Select(x => new MuseumResponse
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Location = x.Location,
-                    EstablishedAt = x.EstablishedAt,
-                })
+                .Select(museum => mapper.ToResponse(museum))
                 .ToListAsync(cancellationToken);
             
             return museums;

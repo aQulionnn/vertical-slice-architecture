@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts.MuseumContracts;
 using WebApi.Data;
 using WebApi.Entities;
+using WebApi.Mappers;
 
 namespace WebApi.Features.Museums;
 
@@ -52,13 +53,8 @@ public class CreateMuseumEndpoint(ISender sender): Endpoint<CreateMuseumRequest,
 
     public override async Task<Results<Created<Guid>, BadRequest>> ExecuteAsync(CreateMuseumRequest request, CancellationToken cancellationToken)
     {
-        var command = new CreateMuseum.Command
-        {
-            Name = request.Name,
-            Location = request.Location,
-            Description = request.Description,
-            EstablishedAt = request.EstablishedAt
-        };
+        var mapper = new MuseumMapper();
+        var command = mapper.ToCommand(request);
         
         var museumId = await _sender.Send(command, cancellationToken);
 

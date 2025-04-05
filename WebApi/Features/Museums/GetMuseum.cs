@@ -1,10 +1,9 @@
 using FastEndpoints;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebApi.Contracts.ArtifactContracts;
 using WebApi.Contracts.MuseumContracts;
 using WebApi.Data;
+using WebApi.Mappers;
 
 namespace WebApi.Features.Museums;
 
@@ -21,19 +20,14 @@ public static class GetMuseum
         
         public async Task<MuseumResponse?> Handle(Query request, CancellationToken cancellationToken)
         {
+            var mapper = new MuseumMapper();
             var museum = await _context.Museums
-                .Where(x => x.Id == request.Id)
-                .Select(x => new MuseumResponse
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Location = x.Location,
-                    EstablishedAt = x.EstablishedAt,
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
             
-            return museum;
+            if (museum is null)
+                return null;
+            
+            return mapper.ToResponse(museum);
         }
     }
 }
