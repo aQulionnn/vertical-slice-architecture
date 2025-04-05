@@ -1,6 +1,7 @@
 using Ardalis.ApiEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Nelibur.ObjectMapper;
 using WebApi.Contracts.HistoricalEventContracts;
 using WebApi.Data;
 using WebApi.Entities;
@@ -49,14 +50,7 @@ public class CreateHistoricalEventEndpoint(ISender sender) : EndpointBaseAsync
     [HttpPost("api/historical-events")]
     public override async Task<ActionResult<Guid>> HandleAsync([FromBody] CreateHistoricalEventRequest request, CancellationToken cancellationToken = default)
     {
-        var command = new CreateHistoricalEvent.Command
-        {
-            Title = request.Title,
-            Description = request.Description,
-            EventDate = request.EventDate,
-            Location = request.Location
-        };
-        
+        var command = TinyMapper.Map<CreateHistoricalEvent.Command>(request);
         var historicalEvent = await _sender.Send(command, cancellationToken);
         
         return Ok(historicalEvent);

@@ -2,6 +2,7 @@ using Carter;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
+using WebApi.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDataba
 
 builder.Services.AddControllers();
 builder.Services.AddFastEndpoints();
+
+HistoricalEventMapper.Register();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

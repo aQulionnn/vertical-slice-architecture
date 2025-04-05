@@ -2,6 +2,7 @@ using Ardalis.ApiEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nelibur.ObjectMapper;
 using WebApi.Contracts.HistoricalEventContracts;
 using WebApi.Data;
 
@@ -21,14 +22,7 @@ public static class GetHistoricalEvents
         public async Task<IEnumerable<HistoricalEventResponse>> Handle(Query request, CancellationToken cancellationToken)
         {
             var historicalEvents = await _context.HistoricalEvents
-                .Select(x => new HistoricalEventResponse
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    EventDate = x.EventDate,
-                    Location = x.Location,
-                })
+                .Select(x => TinyMapper.Map<HistoricalEventResponse>(x))
                 .ToListAsync(cancellationToken);
             
             return historicalEvents;
