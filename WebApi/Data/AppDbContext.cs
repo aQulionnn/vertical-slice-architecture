@@ -7,4 +7,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Artifact> Artifacts { get; set; }
     public DbSet<Museum> Museums { get; set; }
+    public DbSet<HistoricalEvent> HistoricalEvents { get; set; }
 }
