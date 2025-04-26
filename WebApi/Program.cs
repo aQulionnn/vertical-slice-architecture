@@ -2,6 +2,7 @@ using Carter;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
+using WebApi.Interceptors;
 using WebApi.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,11 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(assembly);
 });
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("Database"));
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseInMemoryDatabase("Database");
+    options.AddInterceptors(new SqlLoggingInterceptor());
+});
 
 builder.Services.AddControllers();
 builder.Services.AddFastEndpoints();
