@@ -15,10 +15,13 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(assembly);
 });
 
+builder.Services.AddSingleton<SqlLoggingInterceptor>();
+builder.Services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseInMemoryDatabase("Database");
-    options.AddInterceptors(new SqlLoggingInterceptor());
+    options.AddInterceptors(new SqlLoggingInterceptor(), new UpdateAuditableEntitiesInterceptor());
 });
 
 builder.Services.AddControllers();
