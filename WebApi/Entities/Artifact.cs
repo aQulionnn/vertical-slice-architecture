@@ -2,7 +2,7 @@ using WebApi.Primitives;
 
 namespace WebApi.Entities;
 
-public class Artifact : IAuditableEntity
+public class Artifact : IAuditableEntity, ISoftDeletableEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -13,4 +13,6 @@ public class Artifact : IAuditableEntity
     public DateTime DiscoveryDate { get; set; } = DateTime.Now;
     public DateTime CreatedOn { get; set; }
     public DateTime? ModifiedOn { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedOn { get; set; }
 }

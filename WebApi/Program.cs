@@ -21,7 +21,7 @@ builder.Services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseInMemoryDatabase("Database");
-    options.AddInterceptors(new SqlLoggingInterceptor(), new UpdateAuditableEntitiesInterceptor());
+    options.AddInterceptors(new SqlLoggingInterceptor(), new UpdateAuditableEntitiesInterceptor(), new SoftDeleteInterceptor());
 });
 
 builder.Services.AddControllers();
