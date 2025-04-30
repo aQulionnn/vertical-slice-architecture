@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Interceptors;
 using WebApi.Mappers;
+using WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +16,22 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(assembly);
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<TenantProvider>();
+
 builder.Services.AddSingleton<SqlLoggingInterceptor>();
 builder.Services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
+builder.Services.AddScoped<MultiTenancyInterceptor>();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>((sp, options) =>
 {
     options.UseInMemoryDatabase("Database");
-    options.AddInterceptors(new SqlLoggingInterceptor(), new UpdateAuditableEntitiesInterceptor(), new SoftDeleteInterceptor());
+    options.AddInterceptors(
+        new SqlLoggingInterceptor(), 
+        new UpdateAuditableEntitiesInterceptor(), 
+        new SoftDeleteInterceptor(),
+        sp.GetRequiredService<MultiTenancyInterceptor>()
+    );
 });
 
 builder.Services.AddControllers();
