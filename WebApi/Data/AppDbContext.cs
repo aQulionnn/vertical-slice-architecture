@@ -25,16 +25,6 @@ public class AppDbContext : DbContext
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            if (typeof(ISoftDeletableEntity).IsAssignableFrom(entityType.ClrType))
-            {
-                var parameter = Expression.Parameter(entityType.ClrType, "e");
-                var property = Expression.Property(parameter, nameof(ISoftDeletableEntity.IsDeleted));
-                var constant = Expression.Constant(false);
-                var lambda = Expression.Lambda(Expression.Equal(property, constant), parameter);
-                
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-            }
-
             if (typeof(IMultiTenant).IsAssignableFrom(entityType.ClrType))
             {
                 var parameter = Expression.Parameter(entityType.ClrType, "e");
@@ -43,6 +33,20 @@ public class AppDbContext : DbContext
                 var lambda = Expression.Lambda(Expression.Equal(property, constant), parameter);
                 
                 modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+            }
+            
+            if (typeof(ISoftDeletableEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(ISoftDeletableEntity.IsDeleted));
+                var constant = Expression.Constant(false);
+                var lambda = Expression.Lambda(Expression.Equal(property, constant), parameter);
+                
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                
+                modelBuilder.Entity(entityType.ClrType)
+                    .Property(nameof(ISoftDeletableEntity.IsDeleted))
+                    .HasDefaultValue(false);
             }
         }
     }

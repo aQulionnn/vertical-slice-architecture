@@ -13,7 +13,7 @@ public sealed class TenantProvider(IHttpContextAccessor httpContextAccessor)
 
         if (!tenantIdHeader.HasValue ||
             !int.TryParse(tenantIdHeader.Value, out int tenantId) ||
-            Tenants.All.Contains(tenantId))
+            !Tenants.All.Contains(tenantId))
         {
             throw new ApplicationException("Invalid tenant id");
         }

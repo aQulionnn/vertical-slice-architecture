@@ -29,8 +29,8 @@ builder.Services.AddDbContext<AppDbContext>((sp, options) =>
     options.AddInterceptors(
         new SqlLoggingInterceptor(), 
         new UpdateAuditableEntitiesInterceptor(), 
-        new SoftDeleteInterceptor(),
-        sp.GetRequiredService<MultiTenancyInterceptor>()
+        sp.GetRequiredService<MultiTenancyInterceptor>(),
+        new SoftDeleteInterceptor()
     );
 });
 
